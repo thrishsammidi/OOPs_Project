@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <vector>
-# define SIZE 3
 using namespace std;
 
 class Tic_Tac_Toe
@@ -10,16 +9,16 @@ class Tic_Tac_Toe
     private:
 
         char **board;
-        int player;
+        char currPlayer;
         int row, col;
+        int size;
 
     public:
 
         Tic_Tac_Toe();
-        void setRow(int r);
-        void setCol(int c);
         void Play();
         void printBoard();
+        void dispCoords();
         bool checkWin(char player); 
         ~Tic_Tac_Toe();       
 };
