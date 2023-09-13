@@ -3,7 +3,9 @@ using namespace std;
 
 int main()
 {
-    Tic_Tac_Toe ob;
-    ob.Play();
+    Board b;    // object creating of class board
+    Player ob(b,'X');   // object creation of class player
+    Player ob2 = ob; //  deep copy constructor
+    ob.Play(b); // calls the play method that takes user input and starts the game
     return 0;  
 }
