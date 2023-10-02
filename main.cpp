@@ -7,5 +7,6 @@ int main()
     Player ob(b,'X');   // object creation of class player
     Player ob2 = ob; //  deep copy constructor
     ob.Play(b); // calls the play method that takes user input and starts the game
+    ob.checkMatchOver();    // displays the use of this pointer
     return 0;  
 }

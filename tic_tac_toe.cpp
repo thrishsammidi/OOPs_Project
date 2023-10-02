@@ -3,16 +3,22 @@
 
 using namespace std;
 
+Board::Board():size(3)  // initializes the size to be 3 using initializer list
+{
+    board = new char*[size];    // dynamically creating new array ( rows )
+
+    for(int i=0;i<size;i++)
+        board[i] = new char[size];   // dynamically creating new array ( columns )
+}
+
+Board::~Board()
+{
+    delete []board;     // deletion of dynamically created array
+}
 
 Player::Player(Board &b,char player)
 {   
-    b.size = 3;   // initializes the size to be 3
     currPlayer = player;   // player X starts the game
-
-    b.board = new char*[b.size];    // dynamically creating new array ( rows )
-
-    for(int i=0;i<b.size;i++)
-        b.board[i] = new char[b.size];   // dynamically creating new array ( columns )
 
     for(int i=0;i<b.size;i++)
     {
@@ -43,11 +49,6 @@ ostream& operator<<(ostream &os, const Board &b)
     return os;
 }
 
-Player::~Player()
-{
-    // delete board;   // deleting the dynamically created pointer to prevent memory leak
-}
-
 void Player::dispCoords(Board &b)
 {
     cout<<"\n";
@@ -62,6 +63,11 @@ void Player::dispCoords(Board &b)
         if (i < 2) cout << "----------------------" << endl;
     }
     cout<<"\n";
+}
+
+void Player::dispCoords()
+{
+    cout<<"Number of moves made in this match: "<<num_steps<<"\n";
 }
 
 // Function to check if a player has won
@@ -107,9 +113,13 @@ void Player::Play(Board &b)
         // Print the updated board
         cout<<b;  
 
+        num_steps++;
+
         // Check if the current player has won
         if (checkWin(currPlayer,b)) {
             cout << "Player " << currPlayer << " wins! Congratulations!" << endl;
+            // function overloading 
+            dispCoords();   //displays number of steps made in the game to find a winner
             break;
         }
 
@@ -122,3 +132,27 @@ void Player::Play(Board &b)
         cout << "It's a draw! The game is over." << endl;
     }
 }
+
+void Player::reset_num_steps()
+{
+    num_steps = 0;
+}
+
+Player::~Player()
+{
+    reset_num_steps();  // displays use of explicit inline functions
+}
+
+Player& Player::checkMatchOver()
+{
+    if(num_steps < 9)
+    {
+        cout<<"Match over and we got a winner!\n";
+    }
+    else
+    {
+        cout<<"Match over but we didn't get a winner!\n";
+    }
+    return *this;
+}
+int Player::num_steps;
