@@ -1,0 +1,116 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+// Base class for game elements with a display function
+class GameElement {
+public:
+    // Pure virtual function, making GameElement an abstract class.
+    virtual void display() const = 0;
+    virtual ~GameElement() {}
+};
+
+// Derived class for displaying the Hangman figure
+class HangmanFigure : public GameElement {
+public:
+    HangmanFigure(int maxAttempts) : maxAttempts(maxAttempts), attemptsLeft(maxAttempts) {}
+
+    // Implement the display function to show the Hangman figure based on attemptsLeft.
+    void display() const override {
+        std::cout << "Attempts left: " << attemptsLeft << std::endl;
+        // You would typically display the Hangman figure here.
+    }
+
+private:
+    int maxAttempts;
+    int attemptsLeft;
+};
+
+// Derived class for managing the Hangman game logic
+class HangmanGame : public GameElement {
+public:
+    HangmanGame(const std::string& word, int maxAttempts) : secretWord(word), maxAttempts(maxAttempts), attemptsLeft(maxAttempts) {
+        guessedWord = std::string(secretWord.length(), '_');
+    }
+
+    // Implement the display function to show the game status.
+    void display() const override {
+        std::cout << "Guessed word: " << guessedWord << std::endl;
+        std::cout << "Guessed letters: ";
+        for (char c : guessedLetters) {
+            std::cout << c << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void play() {
+        while (attemptsLeft > 0) {
+            display();
+            char guess;
+            std::cout << "Enter a letter: ";
+            std::cin >> guess;
+            if (isCharGuessed(guess)) {
+                std::cout << "You've already guessed this letter." << std::endl;
+                continue;
+            }
+            bool correctGuess = false;
+            for (size_t i = 0; i < secretWord.length(); ++i) {
+                if (secretWord[i] == guess) {
+                    guessedWord[i] = guess;
+                    correctGuess = true;
+                }
+            }
+            if (!correctGuess) {
+                --attemptsLeft;
+                std::cout << "Incorrect guess. " << attemptsLeft << " attempts left." << std::endl;
+            }
+            if (guessedWord == secretWord) {
+                display();
+                std::cout << "Congratulations! You guessed the word: " << secretWord << std::endl;
+                break;
+            }
+        }
+        if (attemptsLeft == 0) {
+            std::cout << "Out of attempts! The word was: " << secretWord << std::endl;
+        }
+    }
+
+private:
+    std::string secretWord;
+    std::string guessedWord;
+    int maxAttempts;
+    int attemptsLeft;
+
+    bool isCharGuessed(char guess) {
+        for (char c : guessedLetters) {
+            if (c == guess) {
+                return true;
+            }
+        }
+        guessedLetters.push_back(guess);
+        return false;
+    }
+
+    std::vector<char> guessedLetters;
+};
+
+int main() {
+    std::string secretWord;
+    int maxAttempts;
+
+    std::cout << "Welcome to Hangman!" << std::endl;
+    std::cout << "Enter the secret word: ";
+    std::cin >> secretWord;
+
+    std::cout << "Enter the maximum number of attempts: ";
+    std::cin >> maxAttempts;
+
+    // Create an instance of HangmanGame and HangmanFigure
+    HangmanGame game(secretWord, maxAttempts);
+    HangmanFigure figure(maxAttempts);
+
+    game.play();
+    figure.display();
+
+    return 0;
+}
